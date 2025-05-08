@@ -19,7 +19,8 @@
     "@types/bcrypt": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.0.0",
-    "typescript": "^5"
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
   },
   "scripts": {
     "start": "cds-serve",
@@ -27,5 +28,14 @@
   },
   "imports": {
     "#cds-models/*": "./@cds-models/*/index.js"
+  },
+  "cds": {
+    "requires": {
+      "[production]": {
+        "auth": {
+          "path": "./srv/auth"
+        }
+      }
+    }
   }
 }

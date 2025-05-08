@@ -2,6 +2,7 @@ using {
   crm.db as db 
 } from '../db/schema';
 
+@path: '/crm'
 service CRMService {
 
   entity Customers as projection on db.Customers 

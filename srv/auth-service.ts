@@ -1,7 +1,7 @@
 import cds from "@sap/cds";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { authResponce } from '../../types/types';
+import { authResponce } from '../types/types';
 
 const SECRET = cds.env.jwt?.secret||'secret';
 const TOKEN_EXPIRY = "1h";
@@ -14,13 +14,13 @@ class AuthService extends cds.ApplicationService {
     const { Customers } = this.entities;
     this.Customers = Customers;
 
-    this.on("signUp", this.signUp.bind(this));
+    this.on("signUp", this.signUpImpl);
     this.on("signIn", this.signIn.bind(this));
   }
 
-  async signUp(req: any): Promise<authResponce> {
+  async signUpImpl(req: any) {
     const { email, password, fullName, role } = req.data;
-
+    console.log('Sign Up called');
     if (!email || !password || !fullName || !role) {
       return req.reject(400, "All fields are required");
     }
@@ -47,7 +47,8 @@ class AuthService extends cds.ApplicationService {
 
     console.log("token SignUP: ", token);
 
-    return { message: "User registered successfully", token, err: "" };
+    return token;
+ //return {message: "User registered successfully",token,err: null,};
   }
 
   async signIn(req: any): Promise<authResponce> {

@@ -1,0 +1,11 @@
+POST http://localhost:4004/auth/signUp
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "secure123",
+  "company": "Acme Corp",
+  "country": "US"
+}
