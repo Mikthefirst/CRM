@@ -9,3 +9,16 @@ Accept: application/json
   "company": "Acme Corp",
   "country": "US"
 }
+
+###
+#
+POST http://localhost:4004/auth/signIn
+Content-Type: application/json
+
+{
+  "email": "john@example.com",
+  "password": "secure123"
+}
+
+###
+#

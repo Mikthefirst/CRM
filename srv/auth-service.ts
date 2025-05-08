@@ -1,38 +1,47 @@
-import cds from "@sap/cds";
+import { Customer } from './../@cds-models/crm/db/index';
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { authResponce } from '../types/types';
+import { authResponce } from "../types/types";
 
-const SECRET = cds.env.jwt?.secret||'secret';
+import cds from "@sap/cds";
+import { Customers, signUp, signIn } from "#cds-models/AuthService";
+const SECRET = cds.env.jwt?.secret || "secret";
 const TOKEN_EXPIRY = "1h";
 
-console.log('JWT_SECRET: ', SECRET);
-class AuthService extends cds.ApplicationService {
-  private Customers: any;
+export class AuthService extends cds.ApplicationService {
+  init() {
+    this.before(["CREATE", "UPDATE"], Customers, async (req) => {
+      console.log("Before CREATE/UPDATE Customers", req.data);
+    });
+    this.after("READ", Customers, async (customers, req) => {
+      console.log("After READ Customers", customers);
+    });
 
-  async init() {
-    const { Customers } = this.entities;
-    this.Customers = Customers;
+    this.on(signUp, async (req) => {
+      return await this.signUpImpl(req);
+    });
+    this.on(signIn, async (req) => {
+      return await this.signInImpl(req);
+    });
 
-    this.on("signUp", this.signUpImpl);
-    this.on("signIn", this.signIn.bind(this));
+    return super.init();
   }
 
-  async signUpImpl(req: any) {
-    const { email, password, fullName, role } = req.data;
-    console.log('Sign Up called');
-    if (!email || !password || !fullName || !role) {
+  async signUpImpl(req: any): Promise<authResponce> {
+    const { email, password, name, role } = req.data;
+    console.log("Sign Up called");
+    if (!email || !password || !name) {
       return req.reject(400, "All fields are required");
     }
 
-    const existing = await SELECT.one.from(this.Customers).where({ email });
+    const existing = await SELECT.one.from(Customers).where({ email });
     if (existing) return req.reject(400, "Email has already registered");
 
     const hashed = await bcrypt.hash(password, 10);
-    const user = await INSERT.into(this.Customers).entries({
+    const user = await INSERT.into(Customers).entries({
       email,
       password: hashed,
-      fullName,
+      name,
       role,
     });
     const token = jwt.sign(
@@ -47,17 +56,18 @@ class AuthService extends cds.ApplicationService {
 
     console.log("token SignUP: ", token);
 
-    return token;
- //return {message: "User registered successfully",token,err: null,};
+    return { token, message: "User has registred succesfully", err: "" };
   }
-
-  async signIn(req: any): Promise<authResponce> {
+  async signInImpl(req: any): Promise<authResponce> {
+    console.log(req.data);
     const { email, password } = req.data;
-    const user = await SELECT.one.from(this.Customers).where({ email });
+    const user = await SELECT.one.from(Customers).where({ email });
 
     if (!user) return req.reject(401, "Invalid credentials(email)");
+    let valid;
+    if (user.password) valid = await bcrypt.compare(password, user.password);
+    else req.reject(500, "Incorrect account");
 
-    const valid = await bcrypt.compare(password, user.password);
     if (!valid) return req.reject(401, "Invalid credentials(password)");
 
     const token = jwt.sign(
@@ -74,5 +84,3 @@ class AuthService extends cds.ApplicationService {
     return { message: "User has logined", token: token, err: "" };
   }
 }
-
-module.exports = new AuthService();
