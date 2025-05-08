@@ -4,12 +4,14 @@ using {  cuid, managed, Language, Country} from '@sap/cds/common';
 entity Customers : cuid, managed {
   name        : String(100);
   email       : String(100) @unique;
+  password    :String(20);
   phone       : String(20);
   company     : String(100);
   country     : Country; 
   isVIP       : Boolean default false;
   status      : Association to CustomerStatusCodes;
   notes       : String(500);
+  role: Role default 'admin';
 }
 
 entity Problem : cuid, managed {
@@ -57,6 +59,11 @@ Medium;
 Low;
 }
 
+type Role: String enum{
+admin; 
+support;
+customer;
+}
 
 
 
