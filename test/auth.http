@@ -3,11 +3,11 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "name": "John Doe",
-  "email": "john@example.com",
-  "password": "secure123",
-  "company": "Acme Corp",
-  "country": "US"
+  "name": "Mikhail Leikind",
+  "email": "mik@gmail.com",
+  "password": "1111",
+  "company": "Innowise Group",
+  "country": "BE"
 }
 
 ###
@@ -16,8 +16,8 @@ POST http://localhost:4004/auth/signIn
 Content-Type: application/json
 
 {
-  "email": "john@example.com",
-  "password": "secure123"
+  "email": "mik@gmail.com",
+  "password": "1111"
 }
 
 ###

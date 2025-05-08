@@ -3,7 +3,7 @@ using { crm.db as db} from '../db/schema';
 @path:'/auth'
 service AuthService {
 
-  @readonly
+  @requires: 'authenticated-user'
   entity Customers as projection on db.Customers;
 
   action signUp(name:String, email: String, password: String, company: String, country: String) returns authResponse; 
