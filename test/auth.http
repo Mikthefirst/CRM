@@ -1,0 +1,24 @@
+POST http://localhost:4004/auth/signUp
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Mikhail Leikind",
+  "email": "mik@gmail.com",
+  "password": "1111",
+  "company": "Innowise Group",
+  "country": "BE"
+}
+
+###
+#
+POST http://localhost:4004/auth/signIn
+Content-Type: application/json
+
+{
+  "email": "mik@gmail.com",
+  "password": "1111"
+}
+
+###
+#
